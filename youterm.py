@@ -33,6 +33,8 @@ def format_duration(input: str) -> str:
         seconds = input[minutes_index+1:seconds_index]
     else:
         seconds = input[:seconds_index]
+    if len(seconds) == 1:
+        seconds = "0" + seconds
     to_str += seconds
     return fg(input=to_str, color='cyan')
 
@@ -46,12 +48,11 @@ def get_details(video_id: str, api_key: str) -> dict:
     }
     return details
 
-def main() -> None:
-    api_key = get_api_key()
+def main(api_key: str) -> None:
+    query = str(input("Search youtube: "))
+    if query.lower() == 'q':
+        quit()
     try:
-        query = str(input("Search youtube: "))
-        if query.lower() == 'q':
-            exit()
         response = yt_search(query=query, api_key=api_key)
     except:
         exit(fg(input="ERROR: unable to get response from YouTube", color='red'))
@@ -63,7 +64,7 @@ def main() -> None:
         details = get_details(video_id, api_key)
         print(
             f"├─ {fg(input=num, color='red')}\n"
-            f"│   ├── {details['title']}\n"
+            f"│   ├── {wrapper(input=details['title'], prefix_length=8)}\n"
             f"│   ├── {channel}\n"
             f"│   ├── {wrapper(input=desc, prefix_length=8)}\n"
             f"│   ├── {details['duration']}\n"
@@ -73,7 +74,7 @@ def main() -> None:
         try:
             selection = input("└ Select song: ")
             if selection.lower() == 'q':
-                quit()
+                return
             selection = int(selection) - 1
             if selection < 0 or selection > len(response['items']):
                 raise ValueError
@@ -92,4 +93,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     while True:
-        main()
+        main(api_key=get_api_key())

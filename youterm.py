@@ -36,14 +36,14 @@ def format_duration(input: str) -> str:
     if len(seconds) == 1:
         seconds = "0" + seconds
     to_str += seconds
-    return fg(input=to_str, color='cyan')
+    return to_str
 
 def get_details(video_id: str, api_key: str) -> dict:
     url = f"https://youtube.googleapis.com/youtube/v3/videos?id={video_id}&part=snippet,contentDetails&key={api_key}"
     item = get(url).json()['items'][0]
     details = {
-        'title': fg(input=item['snippet']['title'], color='yellow'),
-        'date': fg(input=format_date(item['snippet']['publishedAt']), color='green'),
+        'title': item['snippet']['title'],
+        'date': format_date(item['snippet']['publishedAt']),
         'duration': format_duration(item['contentDetails']['duration'][2:]),
     }
     return details
@@ -59,16 +59,16 @@ def main(api_key: str) -> None:
     for index, item in enumerate(response['items']):
         num = f"[{str(index+1)}]"
         video_id = item['id']['videoId']
-        channel = fg(input=item['snippet']['channelTitle'], color='magenta')
+        channel = item['snippet']['channelTitle']
         desc = item['snippet']['description']
         details = get_details(video_id, api_key)
         print(
             f"├─ {fg(input=num, color='red')}\n"
-            f"│   ├── {wrapper(input=details['title'], prefix_length=8)}\n"
-            f"│   ├── {channel}\n"
-            f"│   ├── {wrapper(input=desc, prefix_length=8)}\n"
-            f"│   ├── {details['duration']}\n"
-            f"│   └── {details['date']}"
+            f"│   ├── {wrapper(input=details['title'], prefix_length=8, color='yellow')}\n"
+            f"│   ├── {fg(input=channel, color='magenta')}\n"
+            f"│   ├── {wrapper(input=desc, prefix_length=8, color='green')}\n"
+            f"│   ├── {fg(input=details['duration'], color='cyan')}\n"
+            f"│   └── {fg(input=details['date'], color='blue')}"
         )
     while True:
         try:

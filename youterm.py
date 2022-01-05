@@ -92,5 +92,6 @@ def main(api_key: str) -> None:
     )
 
 if __name__ == "__main__":
+    key = get_api_key()
     while True:
-        main(api_key=get_api_key())
+        main(api_key=key)

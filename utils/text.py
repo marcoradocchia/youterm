@@ -2,10 +2,10 @@ from os import get_terminal_size
 from .colorizer import Colorize
 
 
-def wrap(input: str, prefix_length: int, color: str) -> str:
+def wrap(input: str, pref_len: int, color: str) -> str:
     fg = Colorize.fg
     cols, _ = get_terminal_size()
-    cols -= prefix_length  # 4 cols are already used by lines
+    cols -= pref_len  # 4 cols are already used by lines
     new_string = []
     divisions = int(len(input) / cols)
     if divisions == 0:

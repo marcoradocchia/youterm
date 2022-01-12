@@ -41,6 +41,8 @@ def format_duration(input: str) -> str:
         seconds = input[:seconds_index]
     if len(seconds) == 1:
         seconds = "0" + seconds
+    elif len(seconds) == 0:
+        seconds = "00"
     to_str += seconds
     return to_str
 

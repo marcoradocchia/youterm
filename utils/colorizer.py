@@ -5,12 +5,13 @@ class Colorize():
     def style(input: str, style: str) -> str:
         # syles
         styles = {
-            'cbold':     '\33[1m',
-            'citalic':   '\33[3m',
-            'curl':      '\33[4m',
-            'cblink':    '\33[5m',
-            'cblink2':   '\33[6m',
-            'cselected': '\33[7m',
+            'bold':       '\33[1m',
+            'italic':     '\33[3m',
+            'bolditalic': '\33[1m\33[3m',
+            'url':        '\33[4m',
+            'blink':      '\33[5m',
+            'blink2':     '\33[6m',
+            'selected':   '\33[7m',
         }
         return styles[style] + input + END
 

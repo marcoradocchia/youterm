@@ -114,7 +114,6 @@ def main_loop(api_key: str, results: int, video_fmt: str = '') -> None:
         run(
             [
                 "mpv",
-                "--quiet",
                 f"--ytdl-format={video_fmt}bestaudio",
                 f"https://www.youtube.com/watch?v={selected_id}",
             ]

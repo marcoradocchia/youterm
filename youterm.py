@@ -28,26 +28,34 @@ def yt_search(api_key: str, query: str, max_results: int) -> None:
 
 
 def format_duration(input: str) -> str:
-    to_str = ""
-    days_index = input.find("D")
-    hours_index = input.find("H")
-    minutes_index = input.find("M")
-    seconds_index = input.find("S")
-    if days_index != -1:
-        to_str += input[:days_index] + ":"
-    if hours_index != -1:
-        to_str += input[days_index+1:hours_index] + ":"
-    if minutes_index != -1:
-        to_str += input[hours_index+1:minutes_index] + ":"
-        seconds = input[minutes_index+1:seconds_index]
-    else:
-        seconds = input[:seconds_index]
-    if len(seconds) == 1:
-        seconds = "0" + seconds
-    elif len(seconds) == 0:
-        seconds = "00"
-    to_str += seconds
-    return to_str
+    print(input)
+    if "DT" in input or "D" in input:
+        return "--:--:--:--"
+    dhms = {"H": None, "M": None, "S": None}
+    string = ""
+    # get values
+    for unit in dhms:
+        if unit in input:
+            index = input.find(unit)
+            dhms[unit] = input[:index]
+            input = input[index + 1 :]
+    # format string
+    for unit in dhms:
+        value = dhms[unit]
+        if not value:
+            del dhms[unit]
+            break
+    print(dhms)
+    for unit in dhms:
+        value = dhms[unit]
+        if value is None:
+            string += "00"
+        elif len(value) < 2:
+            string += ("0" + value)
+        else:
+            string += value
+        string += ":"
+    return string[:-1]
 
 
 def get_details(video: dict, api_key: str) -> dict:
@@ -62,7 +70,7 @@ def get_details(video: dict, api_key: str) -> dict:
     return video
 
 
-def main_loop(api_key: str, results: int, video_fmt: str = '') -> None:
+def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
     query = str(input("Search youtube: "))
     if query.lower() == "q":
         quit()
@@ -75,10 +83,10 @@ def main_loop(api_key: str, results: int, video_fmt: str = '') -> None:
     videos = []
     for index, item in enumerate(response["items"]):
         video = {
-            'num': f"[{str(index+1)}]",
-            'id': item["id"]["videoId"],
-            'channel': item["snippet"]["channelTitle"],
-            'desc': item["snippet"]["description"],
+            "num": f"[{str(index+1)}]",
+            "id": item["id"]["videoId"],
+            "channel": item["snippet"]["channelTitle"],
+            "desc": item["snippet"]["description"],
         }
         video = get_details(video, api_key)
         print(
@@ -102,14 +110,16 @@ def main_loop(api_key: str, results: int, video_fmt: str = '') -> None:
                     raise ValueError
                 break
             except ValueError:
-                print(fg(
-                    input="Please insert a valid index (must be an integer)",
-                    color="red"
-                ))
+                print(
+                    fg(
+                        input="Please insert a valid index (integer)",
+                        color="red",
+                    )
+                )
         selected_id = videos[selection]["id"]
         print(
-            fg(input="Playing: ", color="green") +
-            style(input=videos[selection]["title"], style="bolditalic")
+            fg(input="Playing: ", color="green")
+            + style(input=videos[selection]["title"], style="bolditalic")
         )
         run(
             [
@@ -123,25 +133,22 @@ def main_loop(api_key: str, results: int, video_fmt: str = '') -> None:
 def main() -> None:
     argparser = ArgumentParser(allow_abbrev=False)
     argparser.add_argument(
-        "-v",
-        "--video",
-        action="store_true",
-        help="Play video"
+        "-v", "--video", action="store_true", help="Play video"
     )
     argparser.add_argument(
         "-r",
         "--results",
         type=int,
         metavar=("<n>"),
-        help="Number of search results displayed"
+        help="Number of search results displayed",
     )
     args = argparser.parse_args()
     key = get_api_key()
-    video_fmt = ''
+    video_fmt = ""
     results = 5  # default value
     if args.video:
         # TODO: add video format selection
-        video_fmt = 'bestvideo+'
+        video_fmt = "bestvideo+"
     if args.results:
         results = args.results
     while True:

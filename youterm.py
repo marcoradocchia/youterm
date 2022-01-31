@@ -28,7 +28,6 @@ def yt_search(api_key: str, query: str, max_results: int) -> None:
 
 
 def format_duration(input: str) -> str:
-    print(input)
     if "DT" in input or "D" in input:
         return "--:--:--:--"
     dhms = {"H": None, "M": None, "S": None}
@@ -45,7 +44,6 @@ def format_duration(input: str) -> str:
         if not value:
             del dhms[unit]
             break
-    print(dhms)
     for unit in dhms:
         value = dhms[unit]
         if value is None:
@@ -71,7 +69,7 @@ def get_details(video: dict, api_key: str) -> dict:
 
 
 def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
-    query = str(input("Search youtube: "))
+    query = str(input("Search YouTube: "))
     if query.lower() == "q":
         quit()
     try:
@@ -102,7 +100,7 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
     while True:
         while True:
             try:
-                selection = input("-> Select song: ")
+                selection = input("-> Select video: ")
                 if selection.lower() == "q":
                     return
                 selection = int(selection) - 1

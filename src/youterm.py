@@ -9,13 +9,18 @@ from utils.colorizer import Colorize
 from utils.date import format_date
 from utils.text import wrap
 
-PASS_ENTRY = "youtube/youterm_api_key"
+PASS_ENTRY = "api/youtube"
 fg = Colorize.fg
 style = Colorize.style
 
 
 def get_api_key() -> str:
-    return popen(f"pass show {PASS_ENTRY} | head -n 1").read().strip()
+    key = popen(
+        f"pass show {PASS_ENTRY} | head -n 1"
+    ).read().strip()
+    if not key:  # handling no key in password store
+        exit("Error occoured retrieving api key")
+    return key
 
 
 def yt_search(api_key: str, query: str, max_results: int) -> None:

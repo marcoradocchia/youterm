@@ -23,6 +23,6 @@ the script.
 You can use this script cloning the repository with git:
 ```sh
 git clone https://github.com/marcoradocchia/youterm.git
-cd lyrterm
+cd youterm
 sudo make install
 ```

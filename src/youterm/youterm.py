@@ -1,76 +1,32 @@
 #!/usr/bin/env python3
 # coding=utf-8
+
+# youterm: CLI tool to search for YouTube videos and play selected video/audio
+# via MPV
+# Copyright (C) 2022 Marco Radocchia
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program. If not, see https://www.gnu.org/licenses/.
+
 from argparse import ArgumentParser
-from os import popen
-from requests import get
 from sys import exit
 from subprocess import run
 from utils.colorizer import Colorize
-from utils.date import format_date
 from utils.text import wrap
+from yt import yt_search, get_api_key, get_details
 
-PASS_ENTRY = "api/youtube"
 fg = Colorize.fg
 style = Colorize.style
-
-
-def get_api_key() -> str:
-    key = popen(
-        f"pass show {PASS_ENTRY} | head -n 1"
-    ).read().strip()
-    if not key:  # handling no key in password store
-        exit("Error occoured retrieving api key")
-    return key
-
-
-def yt_search(api_key: str, query: str, max_results: int) -> None:
-    url = (
-        "https://youtube.googleapis.com/youtube/"
-        "v3/search?part=snippet&type=video&"
-    )
-    url += f"max_results={max_results}&q={query}&key={api_key}"
-    return get(url).json()
-
-
-def format_duration(input: str) -> str:
-    if "DT" in input or "D" in input:
-        return "--:--:--:--"
-    dhms = {"H": None, "M": None, "S": None}
-    string = ""
-    # get values
-    for unit in dhms:
-        if unit in input:
-            index = input.find(unit)
-            dhms[unit] = input[:index]
-            input = input[index + 1 :]
-    # format string
-    for unit in dhms:
-        value = dhms[unit]
-        if not value:
-            del dhms[unit]
-            break
-    for unit in dhms:
-        value = dhms[unit]
-        if value is None:
-            string += "00"
-        elif len(value) < 2:
-            string += ("0" + value)
-        else:
-            string += value
-        string += ":"
-    return string[:-1]
-
-
-def get_details(video: dict, api_key: str) -> dict:
-    url = (
-        "https://youtube.googleapis.com/youtube/v3/"
-        f"videos?id={video['id']}&part=snippet,contentDetails&key={api_key}"
-    )
-    item = get(url).json()["items"][0]
-    video["title"] = item["snippet"]["title"]
-    video["date"] = format_date(item["snippet"]["publishedAt"])
-    video["duration"] = format_duration(item["contentDetails"]["duration"][2:])
-    return video
 
 
 def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
@@ -121,8 +77,12 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
                 )
         selected_id = videos[selection]["id"]
         print(
-            fg(input="Playing: ", color="green")
-            + style(input=videos[selection]["title"], style="bolditalic")
+            fg(input="Playing: ", color="green"),
+            style(input=videos[selection]["title"], style="bolditalic"),
+        )
+        print(
+            fg(input="URL: ", color="yellow"),
+            f"https://youtu.be/{videos[selection]['id']}",
         )
         run(
             [
@@ -134,7 +94,11 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
 
 
 def main() -> None:
-    argparser = ArgumentParser(allow_abbrev=False)
+    argparser = ArgumentParser(
+        description=""" CLI tool to search for YouTube videos and play selected
+            video/audio via MPV""",
+        allow_abbrev=False,
+    )
     argparser.add_argument(
         "-v", "--video", action="store_true", help="Play video"
     )
@@ -145,8 +109,15 @@ def main() -> None:
         metavar=("<n>"),
         help="Number of search results displayed",
     )
+    argparser.add_argument(
+        "-a",
+        "--api",
+        type=str,
+        metavar=("<api_key>"),
+        help="YouTube Data v3 API key",
+    )
     args = argparser.parse_args()
-    key = get_api_key()
+    key = args.api or get_api_key()
     video_fmt = ""
     results = 5  # default value
     if args.video:

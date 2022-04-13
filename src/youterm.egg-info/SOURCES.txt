@@ -1,0 +1,12 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/youterm/__init__.py
+src/youterm/main.py
+src/youterm/yt.py
+src/youterm.egg-info/PKG-INFO
+src/youterm.egg-info/SOURCES.txt
+src/youterm.egg-info/dependency_links.txt
+src/youterm.egg-info/entry_points.txt
+src/youterm.egg-info/top_level.txt

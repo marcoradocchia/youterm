@@ -1,3 +1,24 @@
+Metadata-Version: 2.1
+Name: youterm
+Version: 0.0.1
+Summary: CLI tool to search for YouTube videos and play selected video/audio via MPV
+Home-page: https://github.com/marcoradocchia/youterm
+Author: Marco Radocchia
+Author-email: marco.radocchia@outlook.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/marcoradocchia/youterm/issues
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Operating System :: POSIX
+Classifier: Environment :: Console
+Classifier: Natural Language :: English
+Classifier: Topic :: Multimedia :: Video
+Classifier: Topic :: Multimedia :: Sound/Audio
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
 # YouTerm
 
 CLI tool to search for [YouTube](https://youtube.com) videos and play selected
@@ -54,3 +75,5 @@ options:
   -a <api_key>, --api <api_key>
                         YouTube Data v3 API key
 ```
+
+

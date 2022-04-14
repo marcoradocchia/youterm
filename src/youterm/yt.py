@@ -17,7 +17,7 @@
 
 from os import popen
 from requests import get
-from date import format_date
+from youterm.date import format_date
 
 
 PASS_ENTRY = "api/youtube"

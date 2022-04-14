@@ -21,9 +21,9 @@
 from argparse import ArgumentParser
 from sys import exit
 from subprocess import run
-from colorizer import Colorize
-from text import wrap
-from yt import yt_search, get_api_key, get_details
+from youterm.colorizer import Colorize
+from youterm.text import wrap
+from youterm.yt import yt_search, get_api_key, get_details
 
 fg = Colorize.fg
 style = Colorize.style

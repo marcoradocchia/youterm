@@ -1,3 +1,4 @@
 src/youterm/__pycache__
 src/youterm/utils/__pycache__
 dist
+youterm.egg-info

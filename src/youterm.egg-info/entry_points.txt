@@ -1,2 +1,2 @@
 [console_scripts]
-youterm = youterm.main:main
+youterm = youterm.__main__:main

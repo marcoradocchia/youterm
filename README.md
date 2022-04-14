@@ -3,6 +3,8 @@
 CLI tool to search for [YouTube](https://youtube.com) videos and play selected
 video/audio via `mpv`.
 
+![yotuerm](assets/youterm.png)
+
 ## Requirements
 
 ### YouTube API

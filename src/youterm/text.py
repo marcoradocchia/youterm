@@ -16,7 +16,7 @@
 # this program. If not, see https://www.gnu.org/licenses/.
 
 from os import get_terminal_size
-from .colorizer import Colorize
+from colorizer import Colorize
 
 
 def wrap(input: str, pref_len: int, color: str) -> str:

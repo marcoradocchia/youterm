@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: youterm
-Version: 0.0.3
+Version: 0.0.4
 Summary: CLI tool to search for YouTube videos and play selected video/audio via MPV
 Home-page: https://github.com/marcoradocchia/youterm
 Author: Marco Radocchia

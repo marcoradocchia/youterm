@@ -24,6 +24,7 @@ from subprocess import run
 from youterm.colorizer import Colorize
 from youterm.text import wrap
 from youterm.yt import yt_search, get_api_key, get_details
+from threading import Thread
 
 fg = Colorize.fg
 style = Colorize.style
@@ -39,7 +40,10 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
         exit(
             fg(input="ERROR: unable to get response from YouTube", color="red")
         )
+
     videos = []
+    threads_requests = []
+
     for index, item in enumerate(response["items"]):
         video = {
             "num": f"[{str(index+1)}]",
@@ -47,7 +51,18 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
             "channel": item["snippet"]["channelTitle"],
             "desc": item["snippet"]["description"],
         }
-        get_details(video, api_key)
+        threads_requests.append(
+            Thread(target=get_details, args=[video, api_key])
+        )
+        videos.append(video)
+
+    # parallelize requests for details (one requests for one result) using
+    # threading
+    for thread in threads_requests:
+        thread.start()
+        thread.join()
+
+    for video in videos:
         print(
             f"├─ {fg(input=video['num'], color='red')}\n"
             "│   ├── "
@@ -57,7 +72,7 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
             f"│   ├── {fg(input=video['duration'], color='cyan')}\n"
             f"│   └── {fg(input=video['date'], color='blue')}"
         )
-        videos.append(video)
+
     while True:
         while True:
             try:

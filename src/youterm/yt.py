@@ -77,5 +77,3 @@ def get_details(video: dict, api_key: str) -> None:
     video["title"] = item["snippet"]["title"]
     video["date"] = format_date(item["snippet"]["publishedAt"])
     video["duration"] = format_duration(item["contentDetails"]["duration"][2:])
-
-

@@ -47,7 +47,7 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
             "channel": item["snippet"]["channelTitle"],
             "desc": item["snippet"]["description"],
         }
-        video = get_details(video, api_key)
+        get_details(video, api_key)
         print(
             f"├─ {fg(input=video['num'], color='red')}\n"
             "│   ├── "

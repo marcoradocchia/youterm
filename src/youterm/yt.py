@@ -68,7 +68,7 @@ def format_duration(input: str) -> str:
     return string[:-1]
 
 
-def get_details(video: dict, api_key: str) -> dict:
+def get_details(video: dict, api_key: str) -> None:
     url = (
         "https://youtube.googleapis.com/youtube/v3/"
         f"videos?id={video['id']}&part=snippet,contentDetails&key={api_key}"
@@ -77,4 +77,3 @@ def get_details(video: dict, api_key: str) -> dict:
     video["title"] = item["snippet"]["title"]
     video["date"] = format_date(item["snippet"]["publishedAt"])
     video["duration"] = format_duration(item["contentDetails"]["duration"][2:])
-    return video

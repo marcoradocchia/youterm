@@ -42,7 +42,7 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
         )
 
     videos = []
-    threads_requests = []
+    threads = []
 
     for index, item in enumerate(response["items"]):
         video = {
@@ -51,15 +51,19 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
             "channel": item["snippet"]["channelTitle"],
             "desc": item["snippet"]["description"],
         }
-        threads_requests.append(
+        threads.append(
             Thread(target=get_details, args=[video, api_key])
         )
         videos.append(video)
 
-    # parallelize requests for details (one requests for one result) using
-    # threading
-    for thread in threads_requests:
+    # perform the requests in different threads (faster because of paralelized
+    # response times)
+    for thread in threads:
         thread.start()
+
+    # wait for all threads to finish before continuing to avoid working with
+    # data is not yet received
+    for thread in threads:
         thread.join()
 
     for video in videos:

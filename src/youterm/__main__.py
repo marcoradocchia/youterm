@@ -31,7 +31,7 @@ style = Colorize.style
 
 
 def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
-    query = str(input("Search YouTube: "))
+    query = str(input("Search YouTube (`q` to quit): "))
     if query.lower() == "q":
         quit()
     try:
@@ -51,9 +51,7 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
             "channel": item["snippet"]["channelTitle"],
             "desc": item["snippet"]["description"],
         }
-        threads.append(
-            Thread(target=get_details, args=[video, api_key])
-        )
+        threads.append(Thread(target=get_details, args=[video, api_key]))
         videos.append(video)
 
     # perform the requests in different threads (faster because of paralelized
@@ -80,7 +78,9 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
     while True:
         while True:
             try:
-                selection = input("-> Select video: ")
+                selection = input(
+                    "└ Select video (`q` to go back to search): "
+                )
                 if selection.lower() == "q":
                     return
                 selection = int(selection) - 1

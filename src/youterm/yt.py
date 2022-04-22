@@ -26,7 +26,7 @@ PASS_ENTRY = "api/youtube"
 def get_api_key() -> str:
     key = popen(f"pass show {PASS_ENTRY}").read().strip()
     if not key:  # handling no key in password store
-        exit("Error occoured retrieving api key")
+        exit("Error occured retrieving api key")
     return key
 
 

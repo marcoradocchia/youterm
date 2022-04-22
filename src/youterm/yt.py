@@ -20,9 +20,6 @@ from requests import get
 from youterm.date import format_date
 
 
-PASS_ENTRY = "api/youtube"
-
-
 def get_api_key(key_cmd: str) -> str:
     key = popen(key_cmd).read().strip()
     if not key:  # handling no key in password store

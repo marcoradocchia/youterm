@@ -23,10 +23,10 @@ from youterm.date import format_date
 PASS_ENTRY = "api/youtube"
 
 
-def get_api_key() -> str:
-    key = popen(f"pass show {PASS_ENTRY}").read().strip()
+def get_api_key(key_cmd: str) -> str:
+    key = popen(key_cmd).read().strip()
     if not key:  # handling no key in password store
-        exit("Error occoured retrieving api key")
+        exit("Error occured retrieving api key")
     return key
 
 

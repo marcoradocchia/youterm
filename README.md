@@ -44,7 +44,7 @@ pip3 install youterm
 
 Invoking `youterm` with no flags defaults to audio only. Below the usage:
 ```
-usage: youterm [-h] [-v] [-r <n>] [-a <api_key>]
+usage: youterm [-h] [-v] [-r <n>] [-a <api_key>] [-k <cmd>]
 
 CLI tool to search for YouTube videos and play selected video/audio via MPV
 
@@ -55,4 +55,6 @@ options:
                         Number of search results displayed
   -a <api_key>, --api <api_key>
                         YouTube Data v3 API key
+  -k <cmd>, --key-cmd <cmd>
+                        Command to evaluate API key
 ```

@@ -135,8 +135,16 @@ def main() -> None:
         metavar=("<api_key>"),
         help="YouTube Data v3 API key",
     )
+    argparser.add_argument(
+        "-k",
+        "--key-cmd",
+        type=str,
+        default="pass show api/youtube",
+        metavar=("<cmd>"),
+        help="Command to evaluate API key",
+    )
     args = argparser.parse_args()
-    key = args.api or get_api_key()
+    key = args.api or get_api_key(args.key_cmd)
     video_fmt = ""
     results = 5  # default value
     if args.video:

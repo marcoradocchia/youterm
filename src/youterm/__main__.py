@@ -26,6 +26,8 @@ from youterm.text import wrap
 from youterm.yt import yt_search, get_api_key, get_details
 from threading import Thread
 
+import readline
+
 fg = Colorize.fg
 style = Colorize.style
 

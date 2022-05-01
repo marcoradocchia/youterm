@@ -18,7 +18,10 @@
 # You should have received a copy of the GNU General Public License along with
 # this program. If not, see https://www.gnu.org/licenses/.
 
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
+from configparser import ConfigParser
+from os import name as os_name
+from os.path import expanduser
 from sys import exit
 from subprocess import run
 from youterm.colorizer import Colorize
@@ -26,10 +29,51 @@ from youterm.text import wrap
 from youterm.yt import yt_search, get_api_key, get_details
 from threading import Thread
 
+# search history, input navigation and copy/paste (this only works on linux)
 import readline
 
 fg = Colorize.fg
 style = Colorize.style
+
+
+def parse_arguments() -> Namespace:
+    argparser = ArgumentParser(
+        description=""" CLI tool to search for YouTube videos and play selected
+            video/audio via MPV""",
+        allow_abbrev=False,
+    )
+    argparser.add_argument(
+        "-v", "--video", action="store_true", help="Play video"
+    )
+    argparser.add_argument(
+        "-r",
+        "--results",
+        type=int,
+        metavar=("<n>"),
+        help="Number of search results displayed",
+    )
+    argparser.add_argument(
+        "-a",
+        "--api",
+        type=str,
+        metavar=("<api_key>"),
+        help="YouTube Data v3 API key",
+    )
+    return argparser.parse_args()
+
+
+def parse_config() -> ConfigParser:
+    def config_file() -> str:
+        if os_name == "posix":  # if os is linux/bsd/macos/...
+            return expanduser("~/.config/youterm/config")
+        elif os_name == "nt":  # if os is windows
+            return expanduser("~\\AppData\\Roaming\\youterm\\config")
+        else:
+            exit("Sorry this OS is not supported")
+
+    config = ConfigParser()
+    config.read(config_file())
+    return config
 
 
 def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
@@ -115,37 +159,12 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
 
 
 def main() -> None:
-    argparser = ArgumentParser(
-        description=""" CLI tool to search for YouTube videos and play selected
-            video/audio via MPV""",
-        allow_abbrev=False,
-    )
-    argparser.add_argument(
-        "-v", "--video", action="store_true", help="Play video"
-    )
-    argparser.add_argument(
-        "-r",
-        "--results",
-        type=int,
-        metavar=("<n>"),
-        help="Number of search results displayed",
-    )
-    argparser.add_argument(
-        "-a",
-        "--api",
-        type=str,
-        metavar=("<api_key>"),
-        help="YouTube Data v3 API key",
-    )
-    args = argparser.parse_args()
-    key = args.api or get_api_key()
-    video_fmt = ""
-    results = 5  # default value
-    if args.video:
-        # TODO: add video format selection
-        video_fmt = "bestvideo+"
-    if args.results:
-        results = args.results
+    args = parse_arguments()
+    config = parse_config()
+
+    key = args.api or config["api"]["key"] or get_api_key()
+    results = args.results or 5  # 5 is default value
+    video_fmt = args.video_fmt or "bestvideo+"
     while True:
         main_loop(api_key=key, results=results, video_fmt=video_fmt)
 

@@ -59,6 +59,13 @@ def parse_arguments() -> Namespace:
         metavar=("<api_key>"),
         help="YouTube Data v3 API key",
     )
+    argparser.add_argument(
+        "-f",
+        "--format",
+        type=str,
+        metavar=("<video_format>"),
+        help="YouTube video format (resolution)"
+    )
     return argparser.parse_args()
 
 
@@ -164,7 +171,7 @@ def main() -> None:
 
     key = args.api or config["api"]["key"] or get_api_key()
     results = args.results or 5  # 5 is default value
-    video_fmt = args.video_fmt or "bestvideo+"
+    video_fmt = args.format or "bestvideo+"
     while True:
         main_loop(api_key=key, results=results, video_fmt=video_fmt)
 

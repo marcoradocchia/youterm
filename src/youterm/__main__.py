@@ -30,7 +30,7 @@ from youterm.yt import yt_search, get_api_key, get_details
 from threading import Thread
 
 # search history, input navigation and copy/paste (this only works on linux)
-import readline
+# import readline
 
 fg = Colorize.fg
 style = Colorize.style

@@ -20,17 +20,21 @@ from requests import get
 from youterm.date import format_date
 
 
-PASS_ENTRY = "api/youtube"
-
-
-def get_api_key() -> str:
-    key = popen(f"pass show {PASS_ENTRY}").read().strip()
+def get_api_key(pass_entry: str) -> str:
+    """
+    Retrieve YouTube Data API v3 key from the password-store
+    """
+    pass_entry = pass_entry or "api/youtube"
+    key = popen(f"pass show {pass_entry}").read().strip()
     if not key:  # handling no key in password store
         exit("Error occoured retrieving api key")
     return key
 
 
 def yt_search(api_key: str, query: str, max_results: int) -> dict:
+    """
+    YouTube Search
+    """
     url = (
         "https://youtube.googleapis.com/youtube/"
         "v3/search?part=snippet&type=video&"
@@ -40,6 +44,9 @@ def yt_search(api_key: str, query: str, max_results: int) -> dict:
 
 
 def format_duration(input: str) -> str:
+    """
+    Format video duration using the HH:MM::SS format
+    """
     if "DT" in input or "D" in input:
         return "--:--:--:--"
     dhms = {"H": None, "M": None, "S": None}
@@ -69,6 +76,10 @@ def format_duration(input: str) -> str:
 
 
 def get_details(video: dict, api_key: str) -> None:
+    """
+    Retrieve video details (title, date, duration) and append them to the video
+    dictionary
+    """
     url = (
         "https://youtube.googleapis.com/youtube/v3/"
         f"videos?id={video['id']}&part=snippet,contentDetails&key={api_key}"

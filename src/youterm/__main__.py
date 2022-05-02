@@ -37,7 +37,11 @@ style = Colorize.style
 
 
 def parse_arguments() -> Namespace:
+    """
+    Parse command line arguments and return argparse.Namespace
+    """
     argparser = ArgumentParser(
+        prog="youterm",
         description=""" CLI tool to search for YouTube videos and play selected
             video/audio via MPV""",
         allow_abbrev=False,
@@ -57,19 +61,24 @@ def parse_arguments() -> Namespace:
         "--api",
         type=str,
         metavar=("<api_key>"),
-        help="YouTube Data v3 API key",
+        help="YouTube Data API v3 key",
     )
     argparser.add_argument(
-        "-f",
-        "--format",
+        "-q",
+        "--quality",
         type=str,
-        metavar=("<video_format>"),
-        help="YouTube video format (resolution)"
+        metavar=("<resolution>"),
+        choices=["144", "240", "360", "480", "720", "1080", "1440", "2160"],
+        help="Choose video quality (if not available choose closest lower)",
     )
     return argparser.parse_args()
 
 
 def parse_config() -> ConfigParser:
+    """
+    Parse config file and return configparser.ConfigParser
+    """
+
     def config_file() -> str:
         if os_name == "posix":  # if os is linux/bsd/macos/...
             return expanduser("~/.config/youterm/config")
@@ -83,8 +92,22 @@ def parse_config() -> ConfigParser:
     return config
 
 
-def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
-    query = str(input("Search YouTube (`q` to quit): "))
+def get_config_option(config: ConfigParser, section: str, option: str) -> str:
+    """
+    Return config option if section and options appear in the config file;
+    return None if not
+    """
+    if config.has_section(section) and config.has_option(section, option):
+        return config.get(section, option)
+    else:
+        return None
+
+
+def main_loop(api_key: str, results: int, quality: str) -> None:
+    """
+    Main loop
+    """
+    query = input("Search YouTube (`q` to quit): ")
     if query.lower() == "q":
         quit()
     try:
@@ -99,7 +122,7 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
 
     for index, item in enumerate(response["items"]):
         video = {
-            "num": f"[{str(index+1)}]",
+            "num": f"[{index+1}]",
             "id": item["id"]["videoId"],
             "channel": item["snippet"]["channelTitle"],
             "desc": item["snippet"]["description"],
@@ -159,21 +182,51 @@ def main_loop(api_key: str, results: int, video_fmt: str = "") -> None:
         run(
             [
                 "mpv",
-                f"--ytdl-format={video_fmt}bestaudio",
+                f"--ytdl-format={quality}",
                 f"https://www.youtube.com/watch?v={selected_id}",
             ]
         )
 
 
 def main() -> None:
+    """
+    Main function
+    """
     args = parse_arguments()
     config = parse_config()
 
-    key = args.api or config["api"]["key"] or get_api_key()
-    results = args.results or 5  # 5 is default value
-    video_fmt = args.format or "bestvideo+"
+    key = (
+        args.api
+        or get_config_option(config=config, section="api", option="key")
+        or get_api_key(
+            pass_entry=get_config_option(
+                config=config, section="api", option="pass_entry"
+            )
+        )
+    )
+    results = (
+        args.results
+        or get_config_option(config=config, section="search", option="results")
+        or 5  # default value
+    )
+    if args.video:
+        quality = args.quality or get_config_option(
+            config=config, section="video", option="quality"
+        )
+        if quality is None:
+            # no quality chosen, default to bestvideo+bestaudio:
+            # "merge the best video-only format and the best audio-only format,
+            # or download the best combined format if video-only format is not
+            # available" (https://github.com/yt-dlp/yt-dlp#filtering-formats)
+            quality = "bv+ba/b"
+        else:
+            quality = f"bv*[height<=?{quality}]+ba/b"
+    else:
+        quality = "bestaudio"
+
     while True:
-        main_loop(api_key=key, results=results, video_fmt=video_fmt)
+        # enter main application loop
+        main_loop(api_key=key, results=results, quality=quality)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,15 @@
-# YouTerm
+<div align="center">
+  <h1 align="center">YouTerm</h1>
+
+  ![GitHub releases](https://img.shields.io/github/downloads/marcoradocchia/youterm/total?color=%23a9b665&logo=github)
+  ![GitHub source size](https://img.shields.io/github/languages/code-size/marcoradocchia/youterm?color=ea6962&logo=github)
+  ![GitHub open issues](https://img.shields.io/github/issues-raw/marcoradocchia/youterm?color=%23d8a657&logo=github)
+  ![GitHub open pull requests](https://img.shields.io/github/issues-pr-raw/marcoradocchia/youterm?color=%2389b482&logo=github)
+  ![GitHub sponsors](https://img.shields.io/github/sponsors/marcoradocchia?color=%23d3869b&logo=github)
+  ![PyPi downloads](https://img.shields.io/pypi/dm/youterm?color=d4be98&label=pypi%20downloads&logo=pypi&logoColor=fff)
+  ![PyPi version](https://img.shields.io/pypi/v/youterm?logo=pypi&logoColor=fff)
+  ![GitHub license](https://img.shields.io/github/license/marcoradocchia/youterm?color=%23e78a4e)
+</div>
 
 CLI tool to search for [YouTube](https://youtube.com) videos and play selected
 video/audio via `mpv`.
